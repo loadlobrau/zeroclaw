@@ -803,10 +803,12 @@ impl Provider for ReliableProvider {
             let provider_clone = provider_name.clone();
 
             // Try the first model in the chain for streaming
-            let current_model = match self.model_chain(model).first() {
-                Some(m) => m.to_string(),
-                None => model.to_string(),
-            };
+            let current_model = self
+                .model_chain(model)
+                .first()
+                .copied()
+                .unwrap_or(model)
+                .to_string();
 
             // For streaming, we attempt once and propagate errors
             // The caller can retry the entire request if needed
