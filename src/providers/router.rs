@@ -86,7 +86,7 @@ impl RouterProvider {
         }
 
         // Not a hint or hint not found — use default provider with the model as-is
-        (self.default_index, model.to_string())
+        (self.default_index, (*model).to_string())
     }
 }
 
@@ -215,7 +215,7 @@ mod tests {
             _temperature: f64,
         ) -> anyhow::Result<String> {
             self.calls.fetch_add(1, Ordering::SeqCst);
-            *self.last_model.lock() = model.to_string();
+            *self.last_model.lock() = (*model).to_string();
             Ok(self.response.to_string())
         }
     }
@@ -234,7 +234,7 @@ mod tests {
             .zip(mocks.iter())
             .map(|((name, _), mock)| {
                 (
-                    name.to_string(),
+                    (*name).to_string(),
                     Box::new(Arc::clone(mock)) as Box<dyn Provider>,
                 )
             })
@@ -244,10 +244,10 @@ mod tests {
             .iter()
             .map(|(hint, provider_name, model)| {
                 (
-                    hint.to_string(),
+                    (*hint).to_string(),
                     Route {
-                        provider_name: provider_name.to_string(),
-                        model: model.to_string(),
+                        provider_name: (*provider_name).to_string(),
+                        model: (*model).to_string(),
                     },
                 )
             })
